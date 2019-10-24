@@ -6,7 +6,7 @@ Example figures are found in G418_readthrough/figures/output_figures
 
 Clonning this repository and running Wangen_G418_workflow.py will regenerate the figures from Wangen and Green. 2019. (https://www.biorxiv.org/content/10.1101/798579v1?rss=1)
 
-**Change threadNumb to the desired number of threads, default is 40**
+**In Wangen_g418_workflow.py, Change threadNumb to the desired number of threads, default is 40**
 
 
 ### *** WARNING ***
