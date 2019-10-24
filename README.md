@@ -1,6 +1,8 @@
 # G418_readthrough
 All code used in analysis of G418 data is available here.
 
+Exact code for generating figures is found in G418_readthrough/figures/figscripts
+
 Clonning this repository and running Wangen_G418_workflow.py will regenerate the figures from Wangen and Green 2019 (https://www.biorxiv.org/content/10.1101/798579v1?rss=1)
 
 ### *** WARNING ***
@@ -12,8 +14,8 @@ To run the analysis pipeline, clone the repository and run the **Wangen_G418_wor
 All command line utilities must be downloaded and added to $PATH:
 
 
-REQUIREMENTS:
-- Command Line Utilities, added to $PATH:
+### REQUIREMENTS:
+#### Command Line Utilities, added to $PATH:
 - tally: 
 - seqtk, 1.0-r31: 
 - skewer, 0.2.2:
@@ -24,8 +26,7 @@ REQUIREMENTS:
 - kentUtils
 
 
-
-python 2.7, install using pip:
+#### python 2.7, install using pip:
 
 * *built in modules do not have version number listed* *
 - os 
@@ -60,9 +61,13 @@ python 2.7, install using pip:
 - GFF ***copy and paste GFF folder into ~/lib/python2.7/site-packages/***
 
 
+#### R 3.4.3:
+- ggplot2 * *2.2.1* *
+- plyr * *1.8.4* *
+- reshape2 * *1.4.3* *
+- scales * *0.5.0* *
+- xtail * *1.1.5* *
+- glue * *1.3.1* *
 
-
-
-R 3.4.3:
 
 
