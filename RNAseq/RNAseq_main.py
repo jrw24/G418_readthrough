@@ -23,7 +23,6 @@ import pysam
 import pandas as pd 
 from pathos.multiprocessing import ProcessingPool as Pool
 import multiprocessing
-import multiprocessing
 import importlib
 
 
