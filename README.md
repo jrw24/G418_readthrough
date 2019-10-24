@@ -3,12 +3,12 @@ All code used in analysis of G418 data is available here.
 
 Clonning this repository and running Wangen_G418_workflow.py will regenerate the figures from Wangen and Green 2019 (https://www.biorxiv.org/content/10.1101/798579v1?rss=1)
 
-## *** WARNING ***
-Running this workflow requires at least 1.1 Terabytes of free storage space
+### *** WARNING ***
+**Running this workflow requires at least 1.1 Terabytes of free storage space**
 
-The pipeline is designed to be run on a computational server with at least 40 threads, and may take an extremely long time to complete if run locally.
+**The pipeline is designed to be run on a computational server with at least 40 threads, and may take an extremely long time to complete if run locally.**
 
-To run the analysis pipeline, clone the repository and run the Wangen_G418_workflow.py script
+To run the analysis pipeline, clone the repository and run the **Wangen_G418_workflow.py script**
 All command line utilities must be downloaded and added to $PATH:
 
 
@@ -23,9 +23,9 @@ REQUIREMENTS:
 
 
 
-
 python 2.7, install using pip:
-
+- argparse
+- pysam
 
 
 R 3.4.3:
