@@ -52,14 +52,14 @@ All command line utilities must be downloaded and added to $PATH
 
 ### REQUIREMENTS:
 #### Command Line Utilities, added to $PATH:
-- tally: 
-- seqtk, 1.0-r31: 
-- skewer, 0.2.2:
-- STAR, STAR_2.5.3a_modified:
-- pigz, 2.3.1:
-- samtools, 0.1.19-96b5f2294a:
-- kpLogo
-- kentUtils
+- tally, 15-065: (https://www.ebi.ac.uk/research/enright/software/kraken) 
+- seqtk, 1.0-r31: (https://github.com/lh3/seqtk)
+- skewer, 0.2.2: (https://github.com/relipmoc/skewer)
+- STAR, STAR_2.5.3a_modified: (https://github.com/alexdobin/STAR)
+- pigz, 2.3.1: (https://zlib.net/pigz/)
+- samtools, 0.1.19-96b5f2294a:(https://github.com/samtools/samtools)
+- kpLogo (http://kplogo.wi.mit.edu/)
+- kentUtils (https://github.com/ENCODE-DCC/kentUtils)
 
 
 #### python 2.7, install using pip:
