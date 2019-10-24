@@ -11,7 +11,8 @@ Clonning this repository and running Wangen_G418_workflow.py will regenerate the
 **The pipeline is designed to be run on a computational server with at least 40 threads, and may take an extremely long time to complete if run locally.**
 
 To run the analysis pipeline, clone the repository and run the **Wangen_G418_workflow.py script**
-All command line utilities must be downloaded and added to $PATH:
+
+All command line utilities must be downloaded and added to $PATH
 
 
 ### REQUIREMENTS:
@@ -41,33 +42,33 @@ All command line utilities must be downloaded and added to $PATH:
 - collections 
 - importlib
 - math 
-- argparse * *1.1* *
-- pandas * *0.22.0* *
-- numpy * *1.14.0* *
-- pysam * *0.13* *
-- scipy * *1.0.1* *
-- statsmodels * *0.9.0* *
-- twobitreader * *3.1.5* *
-- Bio * *1.58* *
-- multiprocessing * *0.70a1* *
-- pathos * *0.2.1* *
-- matplotlib * *2.2.2* *
-- seaborn * *0.9.0* *
-- csv * *1.0* *
-- urllib * *1.17* *
-- lifelines * *0.19.5* *
-- logomaker * *0.8* *
-- scikit-learn * *0.20.3* *
+- argparse *1.1*
+- pandas *0.22.0*
+- numpy *1.14.0*
+- pysam *0.13*
+- scipy *1.0.1*
+- statsmodels *0.9.0*
+- twobitreader *3.1.5*
+- Bio *1.58*
+- multiprocessing *0.70a1*
+- pathos *0.2.1*
+- matplotlib *2.2.2*
+- seaborn *0.9.0*
+- csv *1.0*
+- urllib *1.17*
+- lifelines *0.19.5*
+- logomaker *0.8*
+- scikit-learn *0.20.3*
 - GFF ***copy and paste GFF folder into ~/lib/python2.7/site-packages/***
 
 
 #### R 3.4.3:
-- ggplot2 * *2.2.1* *
-- plyr * *1.8.4* *
-- reshape2 * *1.4.3* *
-- scales * *0.5.0* *
-- xtail * *1.1.5* *
-- glue * *1.3.1* *
+- ggplot2 *2.2.1*
+- plyr *1.8.4*
+- reshape2 *1.4.3*
+- scales *0.5.0*
+- xtail *1.1.5*
+- glue *1.3.1*
 
 
 
