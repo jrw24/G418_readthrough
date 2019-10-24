@@ -3,7 +3,7 @@ All code used in analysis of G418 data is available here.
 
 Exact code for generating figures is found in G418_readthrough/figures/figscripts
 
-Clonning this repository and running Wangen_G418_workflow.py will regenerate the figures from Wangen and Green 2019 (https://www.biorxiv.org/content/10.1101/798579v1?rss=1)
+Clonning this repository and running Wangen_G418_workflow.py will regenerate the figures from Wangen and Green. 2019. (https://www.biorxiv.org/content/10.1101/798579v1?rss=1)
 
 ### *** WARNING ***
 **Running this workflow requires at least 1.1 Terabytes of free storage space to generate all necessary files**
