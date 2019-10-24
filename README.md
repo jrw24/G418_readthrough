@@ -1,14 +1,49 @@
 # G418_readthrough
 All code used in analysis of G418 data is available here.
 
-Exact code for generating figures is found in G418_readthrough/figures/figscripts
+Exact code for generating figures is found in G418_readthrough/figures/figscripts, **Change threadNumb to the desired number of threads, default is 40**
+
+Example figures are found in G418_readthrough/figures/output_figures
 
 Clonning this repository and running Wangen_G418_workflow.py will regenerate the figures from Wangen and Green. 2019. (https://www.biorxiv.org/content/10.1101/798579v1?rss=1)
+
 
 ### *** WARNING ***
 **Running this workflow requires at least 1.1 Terabytes of free storage space to generate all necessary files**
 
 **The pipeline is designed to be run on a computational server with at least 40 threads, and may take an extremely long time to complete if run locally.**
+
+#### Overview of Wangen_G418_workflow.py
+1. Generate Genomes
+- Download hg38 and Gencode annotations
+- Parse the GTF file and choose single isoform for each gene
+- Build all other necessary annotation files from parsed GTF
+- Parse the GTF file and create a second GTF file that contains all valid transcripts
+- Build non codon RNA depletion annotation files
+- Build indexes for STAR alignments
+2. Raw Sequencing Data
+- Download FASTQ files from SRA ***Pending release of data***
+- create merged FASTQ files of replicates for select ribosome profiling experiments
+3. Ribosome Profiling data processing
+- run main analysis pipeline on ribosome profiling data, building all files required for generation of figures
+- mapping to all possible transcripts is only performed for select datasets, as this takes a long time
+4. RNAseq data processing
+- run main analysis pipeline on RNAseq data, building all files required for generation of figures
+5. Plot Figures
+- Run individual scripts that generate all figures in the manuscript
+- Figures can be compared to examples in output_figures to validate successful completion of analysis
+
+
+
+#### Description of subfolders: 
+- **Data** contains raw luciferase measurments. All raw and processed data files will be saved here
+- **figures** contains scripts for generating all figures in *figures/figscripts* and example output figures in *figures/output_figures*
+- **genomes** contains currated refseq annotations of rRNA in fasta format. All annotation files will be created in this directory
+- **GFF** contains a python module that must be coppied to python2.7/site-packages for import into python. Can also be found here: https://github.com/chapmanb/bcbb/tree/master/gff/BCBio/GFF
+- **riboseq** contains scripts for processing ribosome profiling data
+- **RNAseq** contains scripts for processing RNAseq data
+- **utils** contains scripts for generating annotation files
+
 
 To run the analysis pipeline, clone the repository and run the **Wangen_G418_workflow.py script**
 
