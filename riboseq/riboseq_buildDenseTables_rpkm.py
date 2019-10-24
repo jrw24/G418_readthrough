@@ -13,7 +13,6 @@ Design is based off of Colin's makeavggene_main.py
 """
 ### import dependencies
 import sys
-sys.path.append("/home/jamie/scripts/codes")
 import csv
 import rphelper as rph
 from datetime import datetime

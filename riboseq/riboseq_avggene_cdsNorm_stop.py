@@ -10,8 +10,6 @@ plt.rcParams['pdf.fonttype'] = 42 # this keeps most text as actual text in PDFs,
 
 
 import sys
-sys.path.append("/home/jamie/scripts/codes") # add path containing other scripts that might need to be imported
-sys.path.append("/home/jamie/scripts/riboseq/libsettings") # add path containing other scripts that might need to be imported
 from Bio import SeqIO
 import twobitreader
 import GFF
