@@ -2,24 +2,22 @@
 
 
 """
-Script for plotting read size distributions for each region of an mRNA
-	Can then look at 5'UTR vs CDS vs 3'UTR vs mRNA
-	Relies on inputs from densebuilder: Unnormalized, 5'Mapped
+Script for plotting Venn Diagrams comparing total number of transcripts with detectable readthrough
 
 """
 
-
-### plotting TE's
 
 import matplotlib
 matplotlib.use('Agg') # set backend for matplotlib
 import matplotlib.pyplot as plt 
 plt.rcParams['pdf.fonttype'] = 42 # this keeps most text as actual text in PDFs, not outlines
 
+from matplotlib_venn import venn2
 import sys, os
 import pandas as pd
 import pysam
 import numpy as np
+import seaborn as sns
 import csv
 from datetime import datetime
 import argparse
@@ -37,7 +35,7 @@ sys.path.append("%s/riboseq" % args.rootDir)
 sys.path.append("%s/riboseq/libsettings" % args.rootDir)
 import rphelper as rph
 
-ootDir = args.rootDir
+rootDir = args.rootDir
 libsetName = args.libSetFile
 libset = importlib.import_module("%s" % libsetName)
 for attr in dir(libset):
@@ -46,184 +44,132 @@ for attr in dir(libset):
 threadNumb = str(args.threadNumb)
 
 
-samplelist = [samplelist[18]]+[samplelist[20]]
-
-### set inputs here:
-
-defaultInsets = { 'utr5Inset3' : 6, 'cdsInset5' : 18, 'cdsInset3' : 15, 'utr3Inset5' : 6 }
-zeroInsets    = { 'utr5Inset3' : 0, 'cdsInset5' : 0, 'cdsInset3' : 0, 'utr3Inset5' : 0 }
-# insets= defaultInsets
-insets= zeroInsets
+samplelist = samplelist[18:22]
 
 
-UTRdict = rph.readindict(open(UTRfilestring, "rU"))
 
+### set colors
+black = '#000000'
+orange = '#ffb000'
+cyan = '#63cfff'
+red = '#eb4300'
+green = '#00c48f'
+pink = '#eb68c0'
+yellow = '#fff71c'
+blue = '#006eb9'
 
-# samplelist = samplelist[5:9]
+colorList = ['#000000', '#ffb000', '#63cfff', '#eb4300', '#00c48f', '#eb68c0', '#fff71c', '#006eb9']
+colorDict = {
+   'black':colorList[0],
+	'orange':colorList[1],
+	'cyan':colorList[2],
+	'red':colorList[3],
+	'green':colorList[4],
+	'pink':colorList[5],
+	'yellow':colorList[6],
+	'blue':colorList[7] 
+}
 
-# for readsize in 
+def log_trans_b10(x):
+	try:
+		return math.log(x, 10)
+	except:
+		return float(-6.00)
+#         return float("NaN")
+def log_trans_b2(x):
+	try:
+		return math.log(x, 2)
+	except:
+#         return float("NaN")
+		return float(-15.00) # set arbitrarily low value
 
-def region_size_dist_ftsize(readsize, sample):
-	"""
-	build the counts for a given region 
-	"""
-	fp_assign_path = '%s/FPassignment/%s/%s/%s' % (rootpath, genome_name, experiment, sample)
-	totreads_countfile = "%s/%s_FPassigned_counts.txt" % (fp_assign_path, sample)
-	totreadcountf = open(totreads_countfile, "r")
-	totreads = int(totreadcountf.read())
-	totreadcountf.close()
-	print "total reads for sample %s = %s" % (sample, totreads)
+def load_samples():
+	### 
+	ThreshRAW = 128
 
-	# for readsize in ftsize:
-	readsize = str(readsize) # convert to string
-	trspdictfilestring = '%s/DensityUnnormalized/density5p_0shift_%s/%s_%sf/%s_%sf_' %(
-		fp_assign_path, readsize, sample, readsize, sample, readsize)
-
-	bamfilepath_readsize = '%s/%s_star_default/%s_%s_match.sorted.bam' % (
-		fp_assign_path, sample, sample, readsize)
-	bamfile = pysam.AlignmentFile(bamfilepath_readsize, 'rb')
-	read_count_bam = bamfile.count()
-	print "total reads in bamfile for sample: %s, read length: %s, equals == %s" % (sample, readsize, read_count_bam)
-
-	## check total number of reads in this bamfile:
-
-	## build the trspdict now for a given readlength:
-	trspdict = rph.readcountsf(trspdictfilestring)
-
-	## add counters 
-	noUTRentry = 0
-	zeroUtrlen = 0
-	zeroUtrlenInsets = 0
-	zeroCdsdense = 0
-	lowCdsdense = 0
-	lowCdsCounts = 0 # adding cds raw read counter
-
-	### counters for output
-	totUtr5Counts = 0
-	totCdsCounts = 0
-	totUtr3Counts = 0
-	totMrnaCounts = 0
-
-	## iterate through every transcript in the gtf file
-	for trsp in trspdict:
-		if UTRdict.has_key(trsp)!=True: # check to make sure density file has an annotation in the UTR csv
-			noUTRentry +=1
-			continue
-	# from csv: #transcript,chrom,featnum,strand,mrna_len,cds_len,5utr_len,3utr_len,gene_name,stopcodon,stop4nt
-	# position in list: key, 0,		1,		2,		3,		4,		5,		6,		7,		8,			9
-
-	# define base region sizes from UTRdict
-		mrnalen = int(UTRdict[trsp][3])
-		cdslen = int(UTRdict[trsp][4])
-		utr5len = int(UTRdict[trsp][5])
-		utr3len = int(UTRdict[trsp][6])
-
-		### Not sure if I want to keep this here... see how many have lengths of zero first
-		if utr5len == 0:
-			zeroUtrlen +=1
-			# print("transcript has zero utr5 len %s") % trsp
-			# sys.exit() 
-			continue
-		if utr3len == 0:
-			zeroUtrlen +=1
-			continue
-
-# get counts from density file
-		exonsplicedcounts = trspdict[trsp]
-
-		# set starts and ends 
-		cdsstart = utr5len
-		cdsend = len(exonsplicedcounts) - utr3len
-		if cdsstart == cdsend:
-			print "Error, gene length is 0 for transcript %s" % trsp
-			sys.exit()
-
-
-		# modify region lengths using insets:
+	FPassignpath = "%s/FPassignment/%s/%s" % (rootpath, genome_name, experiment)
+	namelist = []
+	dflist= []
+	# dflu3 = []
+	for samp in samplelist:
+	#     dftemp = pd.read_csv('%s/%s/countTables/%s_fl_rpm_28to35_countTable_rpkm.csv' % (FPassignpath, samp, samp))
+	#     dftemp['sampname'] = samp
+	# #     print dftemp.head()
+	#     dflist.append(dftemp)
 		
-		utr5len = utr5len-insets['utr5Inset3']
-		cdslen = cdslen-insets['cdsInset5']-insets['cdsInset3']
-		utr3len = utr3len-insets['utr3Inset5']
-		mrnalen = utr5len+cdslen+utr3len
+		###
+		
+		dftemp = pd.read_csv('%s/%s/countTables/%s_fl_rpm_28to35_countTable_rpkm_utr3adj.csv' % (FPassignpath, samp, samp))
+		dftemp['sampname'] = samp
+		dftemp['cdsCountsLog2'] = dftemp['cdsCounts'].apply(log_trans_b2)
+		dftemp['RAWcdsCountsLog2'] = dftemp['RAWcdsCounts'].apply(log_trans_b2)
+		dftemp['utr3CountsLog2'] = dftemp['utr3Counts'].apply(log_trans_b2)
+		dftemp['utr3AdjCountsLog2'] = dftemp['utr3AdjCounts'].apply(log_trans_b2)
+		dftemp['utr3OccLog2'] = dftemp['utr3_occupancy'].apply(log_trans_b2)
+		dftemp['RRTSlog2'] = dftemp['RRTS'].apply(log_trans_b2)
+		dftemp['cdsDenstilyRPKMlog2'] = dftemp['cdsDensity_rpkm'].apply(log_trans_b2)
+		dftemp['cdslenLog2'] = dftemp['cdslen'].apply(log_trans_b2)
+		dftemp['utr3LenAdjLog2'] = dftemp['utr3LenAdj'].apply(log_trans_b2)
+	#     print dftemp.head()
 
-		if utr5len == 0:
-			zeroUtrlenInsets +=1
-			# print "transcript has zero utr5 len %s" % trsp
-			# sys.exit() 
-			continue
-		if utr3len == 0:
-			zeroUtrlenInsets +=1
-			continue
+		dftemp = dftemp.loc[dftemp['RAWcdsCounts'] > ThreshRAW]
+		print samp
+		print len(dftemp)
 
-		utr5Counts = sum(exonsplicedcounts[:cdsstart-insets['utr5Inset3']])
-		utr3Counts = sum(exonsplicedcounts[cdsend+insets['utr3Inset5']:])
-		cdsCounts = sum(exonsplicedcounts[cdsstart+insets['cdsInset5']:cdsend-insets['cdsInset3']])
-		mrnaCounts = utr5Counts+cdsCounts+utr3Counts
+		dflist.append(dftemp)
+		
+		
+		namelist.append(samp)
+		
+	# ### combine into one master dataframe
+	# df = pd.concat(dflist, axis=0, ignore_index = True)
+	df = pd.concat(dflist, axis=0, ignore_index = True)
 
-		totUtr5Counts += utr5Counts
-		totCdsCounts += cdsCounts
-		totUtr3Counts += utr3Counts
-		totMrnaCounts += mrnaCounts
-	print "UTR5total = %s, CDStotal = %s, UTR3total = %s, mRNAtotal = %s " % (totUtr5Counts, totCdsCounts, totUtr3Counts, totMrnaCounts)
-	return [int(readsize), totUtr5Counts, totCdsCounts, totUtr3Counts, totMrnaCounts]
+	return df, dflist, namelist
+
+def plot_venn(dflist):
+	"""
+	create ven diagrams for total number of transcripts with detectable readthorugh
+	"""
+
+	### Untreated
+	figout_untr = "%s/figures/Fig3S1B_untr.pdf" % (rootDir)
+
+	untr_1 = dflist[0]
+	untr_2 = dflist[1]
+
+	print "plotting Venn Diagrams of %s vs %s" % (samplelist[0], samplelist[1])
+
+	df_untr = untr_1.merge(untr_2, on="#transcript")
+	u1v = df_untr.loc[df_untr['RRTS_x']>0]
+	u2v = df_untr.loc[df_untr['RRTS_y']>0]
+
+	fig, ax = plt.subplots(figsize=(4,4))
+	v = venn2 ([set(u1v['#transcript']), set(u2v['#transcript'])])
+	plt.savefig(figout_untr, format='pdf', bbox_inches="tight")
+
+
+	### G418
+	figout_g418 = "%s/figures/Fig3S1B_g418.pdf" % (rootDir)
+
+	g418_1 = dflist[2]
+	g418_2 = dflist[3]
+
+	print "plotting Venn Diagrams of %s vs %s" % (samplelist[2], samplelist[3])
+
+	df_g418 = g418_1.merge(g418_2, on="#transcript")
+	g1v = df_g418.loc[df_g418['RRTS_x']>0]
+	g2v = df_g418.loc[df_g418['RRTS_y']>0]
+
+	fig, ax = plt.subplots(figsize=(4,4))
+	v = venn2 ([set(g1v['#transcript']), set(g2v['#transcript'])])
+	plt.savefig(figout_g418, format='pdf', bbox_inches="tight")
 
 
 
 def main():
-
-	counter = 0
-	treatlist = ['Untr', 'G418']
-	for sample in samplelist:
-
-		treat = treatlist[counter]
-		# ftsize = [31]
-		# region_size_dist_ftsize(sample, 15)
-		sl = [sample] * len(ftsize)
-		p = Pool(nodes=40) 
-		results = p.map(region_size_dist_ftsize, ftsize, sl)
-		# print results
-
-		dfcols = ['readLength', 'utr5', 'cds', 'utr3', 'mrna']
-		df = pd.DataFrame.from_records(results, columns = dfcols)
-
-		df = df.set_index('readLength')
-		# print df
-
-		utr5reads = df['utr5'].sum()
-		cdsreads = df['cds'].sum()
-		utr3reads = df['utr3'].sum()
-		mrnareads = df['mrna'].sum()
-
-		df['utr5'] = df['utr5']/utr5reads
-		df['cds'] = df['cds']/cdsreads
-		df['utr3'] = df['utr3']/utr3reads
-		df['mrna'] = df['mrna']/mrnareads
-
-		df.drop('utr5', axis=1, inplace=True)
-		df.drop('mrna', axis=1, inplace=True)
-
-		# print df
-		outfig = '%s/figures/Fig3S1B_%s.pdf' % (rootDir, treat)
-
-		fig, ax = plt.subplots()
-
-		df.plot.line()
-		plt.xticks([15,20,25,30,35,40])
-		plt.title(sample)
-
-		plt.savefig(outfig, format='pdf', bbox_inches="tight")
-		plt.close()
-		counter +=1
-		# utr5df = pd.DataFrame()
-
-		# for rl in results:
-			
-
-
-# 	###
-
-
-
+	df, dflist, namelist = load_samples()
+	plot_venn(dflist)
 
 if __name__ == '__main__':
 	main()

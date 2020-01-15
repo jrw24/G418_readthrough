@@ -347,9 +347,22 @@ class plot_figures(object):
 			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)
 		subprocess.Popen(fig_cmnd_S1, shell=True).wait()
 
-		fig_cmnd_S2 = "python2 %s/figures/figscripts/plot_figure2S2.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+		fig_cmnd_S2A = "python2 %s/figures/figscripts/plot_figure2S2A.py --rootDir %s --libSetFile %s --threadNumb %s" % (
 			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)
-		subprocess.Popen(fig_cmnd_S2, shell=True).wait()
+		subprocess.Popen(fig_cmnd_S2A, shell=True).wait()
+
+		fig_cmnd_S2C = "python2 %s/figures/figscripts/plot_figure2S2C.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)
+		subprocess.Popen(fig_cmnd_S2C, shell=True).wait()
+
+		fig_cmnd_S3A = "python2 %s/figures/figscripts/plot_figure2S3A.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+			rootDir, rootDir, self.libSet_RP_allAGmerge, threadNumb)
+		subprocess.Popen(fig_cmnd_S3A, shell=True).wait()
+
+		fig_cmnd_S3B = "python2 %s/figures/figscripts/plot_figure2S3B.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+			rootDir, rootDir, self.libSet_RP_allAGmerge, threadNumb)
+		subprocess.Popen(fig_cmnd_S3B, shell=True).wait()
+
 
 	def plot_figure_3(self):
 
@@ -376,6 +389,10 @@ class plot_figures(object):
 		fig_cmnd_S1B = "python2 %s/figures/figscripts/plot_figure3S1B.py --rootDir %s --libSetFile %s --threadNumb %s" % (
 			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)
 		subprocess.Popen(fig_cmnd_S1B, shell=True).wait()
+
+		fig_cmnd_S1C = "python2 %s/figures/figscripts/plot_figure3S1C.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)
+		subprocess.Popen(fig_cmnd_S1C, shell=True).wait()
 
 		fig_cmnd_S2 = "python2 %s/figures/figscripts/plot_figure3S2.py --rootDir %s --libSetFile %s --threadNumb %s" % (
 			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)

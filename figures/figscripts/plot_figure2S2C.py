@@ -32,7 +32,7 @@ sys.path.append("%s/riboseq" % args.rootDir)
 sys.path.append("%s/riboseq/libsettings" % args.rootDir)
 import rphelper as rph
 
-ootDir = args.rootDir
+rootDir = args.rootDir
 libsetName = args.libSetFile
 libset = importlib.import_module("%s" % libsetName)
 for attr in dir(libset):
@@ -157,7 +157,7 @@ def plot_corr(dflist):
 		plt.setp(g.ax_marg_x.patches, alpha=0.8, color=colorlist[counter], edgecolor="black")
 		plt.setp(g.ax_marg_y.patches, alpha=0.8, color=colorlist[counter], edgecolor="black")
 
-		figout = "%s/figures/Fig2S2_%s_%s.pdf" % (rootDir, counter, treat)
+		figout = "%s/figures/Fig2S2C_%s_%s.pdf" % (rootDir, counter, treat)
 		plt.savefig(figout, format='pdf', bbox_inches="tight")
 		counter +=1
 
