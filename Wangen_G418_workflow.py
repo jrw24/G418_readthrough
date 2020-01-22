@@ -149,6 +149,10 @@ class generateGenomes(object):
 			self.rootDir, gtfInFilePrefix, self.rootDir, twoBitGenome)
 		subprocess.Popen(uORFs_cmnd, shell= True).wait()
 
+		codons_cmnd = "python2 %s/utils/codonFinder.py --gtfInFilePrefix %s --rootDir %s --twoBitGenome %s" % (
+			self.rootDir, gtfInFilePrefix, self.rootDir, twoBitGenome)
+		subprocess.Popen(uORFs_cmnd, shell= True).wait()
+
 	def parse_GTF_allTr(self):
 
 		gtfInFile = "%s/genomes/gencode.v30.annotation.gtf.gz" % (self.rootDir)
@@ -273,11 +277,25 @@ class RibosomeProfiling_workflow(object):
 			self.rootDir, self.rootDir, self.libSetFile, self.threadNumb)
 		subprocess.Popen(raw_countTables_cmnd, shell=True).wait()
 
+	def RP_avgene_cdsNorm_start(self):
+
+		avgene_cmnd = "python2 %s/riboseq/riboseq_avggene_cdsNorm_start.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+			self.rootDir, self.rootDir, self.libSetFile, self.threadNumb)
+		subprocess.Popen(avgene_cmnd, shell=True).wait()
+
 	def RP_avgene_cdsNorm_stop(self):
 
 		avgene_cmnd = "python2 %s/riboseq/riboseq_avggene_cdsNorm_stop.py --rootDir %s --libSetFile %s --threadNumb %s" % (
 			self.rootDir, self.rootDir, self.libSetFile, self.threadNumb)
 		subprocess.Popen(avgene_cmnd, shell=True).wait()
+
+	def RP_codon_occ(self):
+
+		gtfInFilePrefix = "%s/genomes/gencodeV30_protCode_TermStopCodon_validUTRs" % (self.rootDir)
+
+		codon_occ_cmnd = "python2 %s/riboseq/riboseq_codon_occ_workflow.py --gtfInFilePrefix %s --rootDir %s --libSetFile %s --threadNumb %s" % (
+			self.rootDir, gtfInFilePrefix, self.rootDir, self.libSetFile, self.threadNumb)
+		subprocess.Popen(codon_occ_cmnd, shell=True).wait()
 
 	def densebuild_allTr(self):
 
@@ -539,6 +557,7 @@ def main():
 	RP.RPexp()
 	RP.RP_raw_countTables()
 	RP.RP_avgene_cdsNorm_stop()
+	RP.RP_codon_occ()
 	RP.densebuild_allTr()
 
 	RP2 = RibosomeProfiling_workflow(rootDir, threadNumb, 
@@ -546,6 +565,7 @@ def main():
 		libSetFileAllTr="riboseq_libsettings_allAGmerge_allTr")
 	RP2.RPexp()
 	RP2.RP_raw_countTables()
+	RP2.RP_avgene_cdsNorm_start()
 	RP2.RP_avgene_cdsNorm_stop()
 
 	### 4) Run RNAseq analysis pipeline
