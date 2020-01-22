@@ -229,10 +229,15 @@ class RawData(object):
 		self.threadNumb = threadNumb
 
 
-	# def FASTQ_dump_sequences(self):
-	# 	"""
-	# 	Placeholder for FASTQ dump once SRA accession numbers are released
-	# 	"""
+	def FASTQ_dump_sequences(self):
+		"""
+		Download all FASTQ_files in appropriate directories for downstream analysis
+		"""
+
+		fq_dump_cmnd = "python2 %s/utils/fastqDump_G418.py --rootDir %s --threadNumb %s" % (
+			self.rootDir, self.rootDir, self.threadNumb)
+		subprocess.Popen(fq_dump_cmnd, shell=True).wait()
+
 
 	def merge_allAG_experiment(self):
 		"""
@@ -548,6 +553,7 @@ def main():
 
 	### 2) Process Raw Data
 	rawData = RawData(rootDir, threadNumb)
+	rawData.FASTQ_dump_sequences()
 	rawData.merge_allAG_experiment()
 
 	### 3) Run Ribosome Profiling analysis pipeline
