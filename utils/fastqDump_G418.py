@@ -125,33 +125,48 @@ samplelist_RNA = [
 RNA_dict = OrderedDict(zip(srrList_RNA, samplelist_RNA))
 
 
-def get_FASTQ_RP():
+def get_FASTQ_RP(srr):
 
-	command_to_run = "fastq-dump --readids --split-files --skip-technical --gzip %s --outdir %s" % (srrList_RP, outdir_RP)
+	command_to_run = "fastq-dump --readids --split-files --skip-technical --gzip %s --outdir %s" % (srr, outdir_RP)
 	print command_to_run
 	os.system(command_to_run)
 
-def get_FASTQ_RNA():
+def get_FASTQ_RNA(srr):
 
-	command_to_run = "fastq-dump --readids --split-files --skip-technical --gzip %s --outdir %s" % (srrList_RNA, outdir_RNA)
+	command_to_run = "fastq-dump --readids --split-files --skip-technical --gzip %s --outdir %s" % (srr, outdir_RNA)
 	print command_to_run
 	os.system(command_to_run)
 
 
-# def rename_RP_fastq():
-# 	for srr in RP_dict:
-# 		rename_cmnd = "mv %s/"
+def rename_RP_fastq():
+	for srr in RP_dict:
+		rename_cmnd = "mv %s/%s_1.fastq.gz %s/%s_RP.fastq.gz" % (
+			outdir_RP, srr, outdir_RP, RP_dict[srr])
+		os.system(rename_cmnd)
 
+def rename_RNA_fastq():
+	for srr in RNA_dict:
+		rename_cmnd_1 = "mv %s/%s_1.fastq.gz %s/%s_RNA_1.fastq.gz" % (
+			outdir_RNA, srr, outdir_RNA, RNA_dict[srr])
+		os.system(rename_cmnd_1)
 
+		rename_cmnd_2 = "mv %s/%s_2.fastq.gz %s/%s_RNA_2.fastq.gz" % (
+			outdir_RNA, srr, outdir_RNA, RNA_dict[srr])
+		os.system(rename_cmnd_2)
 
 def main():
+
+	print "starting fastq-dump"
 
 	p = Pool(nodes=40)
 	p.map(get_FASTQ_RP, srrList_RP)
 	p.map(get_FASTQ_RNA, srrList_RNA)
+	rename_RP_fastq()
+	rename_RNA_fastq()
 
 
-
+if __name__ == '__main__':
+	main()
 
 
 
