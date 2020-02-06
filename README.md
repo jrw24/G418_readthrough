@@ -4,7 +4,7 @@ All code used in analysis of G418 data is available here.
 Exact code for generating figures is found in G418_readthrough/figures/figscripts, 
 Example figures are found in G418_readthrough/figures/output_figures
 
-Clonning this repository and running Wangen_G418_workflow.py will regenerate the figures from Wangen and Green. 2019. (https://www.biorxiv.org/content/10.1101/798579v1?rss=1)
+Clonning this repository and running Wangen_G418_workflow.py will regenerate the figures from Wangen and Green. 2019. (https://elifesciences.org/articles/52611)
 
 **In Wangen_g418_workflow.py, Change threadNumb to the desired number of threads, default is 40**
 
@@ -12,7 +12,7 @@ Clonning this repository and running Wangen_G418_workflow.py will regenerate the
 ### *** WARNING ***
 **Running this workflow requires at least 1.1 Terabytes of free storage space to generate all necessary files**
 
-**The pipeline is designed to be run on a computational server with at least 40 threads, and may take an extremely long time to complete if run locally.**
+**The pipeline is designed to be run on a computational server with at least 40 threads, and may take an extremely long time to complete if run locally. STAR also requires a considerable amount of memory to run this workflow with default settings. If memory is limiting, increase the --genomeSAsparseD value**
 
 ### Overview of Wangen_G418_workflow.py
 1. Generate Genomes
@@ -61,6 +61,7 @@ All command line utilities must be downloaded and added to $PATH
 - samtools, 0.1.19-96b5f2294a:(https://github.com/samtools/samtools)
 - kpLogo (http://kplogo.wi.mit.edu/)
 - kentUtils (https://github.com/ENCODE-DCC/kentUtils)
+- sra-tools (https://github.com/ncbi/sra-tools)
 
 
 #### python 2.7, install using pip:
@@ -78,6 +79,8 @@ All command line utilities must be downloaded and added to $PATH
 - collections 
 - importlib
 - math 
+- multiprocessing 
+- urllib
 - argparse *1.1*
 - pandas *0.22.0*
 - numpy *1.14.0*
@@ -86,12 +89,10 @@ All command line utilities must be downloaded and added to $PATH
 - statsmodels *0.9.0*
 - twobitreader *3.1.5*
 - Bio *1.58*
-- multiprocessing *0.70a1*
 - pathos *0.2.1*
 - matplotlib *2.2.2*
 - seaborn *0.9.0*
 - csv *1.0*
-- urllib *1.17*
 - lifelines *0.19.5*
 - logomaker *0.8*
 - scikit-learn *0.20.3*
@@ -104,6 +105,7 @@ All command line utilities must be downloaded and added to $PATH
 - reshape2 *1.4.3*
 - scales *0.5.0*
 - xtail *1.1.5*
+- DESeq2 *1.18.1*
 - glue *1.3.1*
 
 
