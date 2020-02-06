@@ -49,11 +49,11 @@ threshold = 10
 ribosome_site = "A" 	# A, P, E, or 0
 
 
-samples = samplelist[0:3],[samplelist[8]]
+samples = samplelist[0:3]+[samplelist[8]]
 print samples
 
 sample_plot_names = samples
-samples_plotted = '_vs_'.join(samples)
+# samples_plotted = '_vs_'.join(samples)
 
 black = '#000000'
 orange = '#ffb000'
@@ -146,19 +146,20 @@ def avggene_riboshift_plot_overlay_zoom(alignposition, ribosome_site, experiment
 		for i in range(len(df_fl_list)):
 			df_fl_list[i].plot.line(x=df_fl_list[i].index+counter, 
 									y=df_fl_list[i].columns.values[0], 
-									ax=ax, color = col_list[i], 
+									ax=ax, 
+									color = colorList[i], 
 									lw=1, 
-									linestyle=lineTypes[i]
+									linestyle=lineTypes[i],
 									use_index=True, 
 									label=sample_plot_names[i])
 			# counter +=6
 			# df_fl_list[i].plot.scatter(y=df_fl_list[i].columns.values[0], ax=ax, color = col_list[i], s=2, use_index=True)
 	if pop == 'eA':
 		for i in range(len(df_eA_list)):
-			df_eA_list[i].plot.line(y=df_eA_list[i].columns.values[0], ax=ax, color = col_list[i], lw=1, use_index=True, label=sample_plot_names[i])
+			df_eA_list[i].plot.line(y=df_eA_list[i].columns.values[0], ax=ax, color = colorList[i], lw=1, use_index=True, label=sample_plot_names[i])
 	if pop == 'custom':
 		for i in range(len(df_fl_list)):
-			df_custom_list[i].plot.line(x=df_custom_list[i].index+counter, y=df_custom_list[i].columns.values[0], ax=ax, color = col_list[i], lw=1, use_index=True, label=sample_plot_names[i])
+			df_custom_list[i].plot.line(x=df_custom_list[i].index+counter, y=df_custom_list[i].columns.values[0], ax=ax, color = colorList[i], lw=1, use_index=True, label=sample_plot_names[i])
 
 	plt.legend(loc=1, prop={'size': 6})
 	plt.savefig(plot_outfile, format = 'pdf', bbox_inches = "tight")

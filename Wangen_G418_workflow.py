@@ -149,9 +149,9 @@ class generateGenomes(object):
 			self.rootDir, gtfInFilePrefix, self.rootDir, twoBitGenome)
 		subprocess.Popen(uORFs_cmnd, shell= True).wait()
 
-		codons_cmnd = "python2 %s/utils/codonFinder.py --gtfInFilePrefix %s --rootDir %s --twoBitGenome %s" % (
-			self.rootDir, gtfInFilePrefix, self.rootDir, twoBitGenome)
-		subprocess.Popen(uORFs_cmnd, shell= True).wait()
+		codons_cmnd = "python2 %s/utils/codonFinder.py --gtfInFilePrefix %s --rootDir %s --twoBitGenome %s --threadNumb %s" % (
+			self.rootDir, gtfInFilePrefix, self.rootDir, twoBitGenome, self.threadNumb)
+		subprocess.Popen(codons_cmnd, shell= True).wait()
 
 	def parse_GTF_allTr(self):
 
@@ -296,7 +296,7 @@ class RibosomeProfiling_workflow(object):
 
 	def RP_codon_occ(self):
 
-		gtfInFilePrefix = "%s/genomes/gencodeV30_protCode_TermStopCodon_validUTRs" % (self.rootDir)
+		gtfInFilePrefix = "gencodeV30_protCode_TermStopCodon_validUTRs" 
 
 		codon_occ_cmnd = "python2 %s/riboseq/riboseq_codon_occ_workflow.py --gtfInFilePrefix %s --rootDir %s --libSetFile %s --threadNumb %s" % (
 			self.rootDir, gtfInFilePrefix, self.rootDir, self.libSetFile, self.threadNumb)
@@ -383,7 +383,7 @@ class plot_figures(object):
 		subprocess.Popen(fig_cmnd_S3A, shell=True).wait()
 
 		fig_cmnd_S3B = "python2 %s/figures/figscripts/plot_figure2S3B.py --rootDir %s --libSetFile %s --threadNumb %s" % (
-			rootDir, rootDir, self.libSet_RP_allAGmerge, threadNumb)
+			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)
 		subprocess.Popen(fig_cmnd_S3B, shell=True).wait()
 
 

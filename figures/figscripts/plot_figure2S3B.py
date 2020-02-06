@@ -10,11 +10,12 @@ import matplotlib.patches as mpatches
 plt.rcParams['pdf.fonttype'] = 42 # this keeps most text as actual text in PDFs, not outlines
 
 import sys, os
-sys.path.append("/home/jamie/scripts/riboseq/libsettings") # add path containing other scripts that might need to be imported
 import pandas as pd
 import pysam
 import numpy as np
 import math
+import argparse
+import importlib
 from scipy import stats
 
 ### import libsettings file and add to global namespace
@@ -109,10 +110,9 @@ def corrfunc(x, y, **kws):
 	r, _ = stats.pearsonr(x, y)
 	rho, _ = stats.spearmanr(x, y)
 	ax = plt.gca()
-	ax.annotate("r = {:.3f}".format(r),
+	ax.annotate("R = {:.3f}".format(r),
 				xy=(.1, .9), xycoords=ax.transAxes)
-	ax.annotate(u"ρ = {:.3f}".format(rho),
-				xy=(.1, .85), xycoords=ax.transAxes)
+
 
 
 

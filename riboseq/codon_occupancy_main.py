@@ -1,9 +1,13 @@
 import sys
+import os
 import argparse
 import struct
 import math, csv
-import rphelper as rph
 import numpy as np
+
+riboseqDir = os.path.dirname(os.path.realpath(__file__)) ## add current directory as rootDir
+sys.path.append(riboseqDir)
+import rphelper as rph
 
 # Workflow to get E, P, A sites occupancy on ribosomes
 # density files are riboshifted already. 
@@ -29,7 +33,7 @@ class codonoccupancy(object):
 		self.outfilepath= outfilepath
 		self.outlistfile= outlistfile
 
-	def writerows(intable, outfilestring):
+	def writerows(self, intable, outfilestring):
 		fc = open(outfilestring, "w")
 		writer = csv.writer(fc)
 		writer.writerows(intable)
@@ -74,6 +78,8 @@ class codonoccupancy(object):
 
 		co= np.asarray(outlist) # convert outlist to a np.array
 		output= co.T 
+		# print "output: ", output
+		# print "self.outlistfile: ", self.outlistfile
 		self.writerows(output,self.outlistfile) # write these rows to a csv
 
 
