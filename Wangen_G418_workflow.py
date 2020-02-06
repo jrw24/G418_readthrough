@@ -149,6 +149,10 @@ class generateGenomes(object):
 			self.rootDir, gtfInFilePrefix, self.rootDir, twoBitGenome)
 		subprocess.Popen(uORFs_cmnd, shell= True).wait()
 
+		codons_cmnd = "python2 %s/utils/codonFinder.py --gtfInFilePrefix %s --rootDir %s --twoBitGenome %s --threadNumb %s" % (
+			self.rootDir, gtfInFilePrefix, self.rootDir, twoBitGenome, self.threadNumb)
+		subprocess.Popen(codons_cmnd, shell= True).wait()
+
 	def parse_GTF_allTr(self):
 
 		gtfInFile = "%s/genomes/gencode.v30.annotation.gtf.gz" % (self.rootDir)
@@ -225,10 +229,15 @@ class RawData(object):
 		self.threadNumb = threadNumb
 
 
-	# def FASTQ_dump_sequences(self):
-	# 	"""
-	# 	Placeholder for FASTQ dump once SRA accession numbers are released
-	# 	"""
+	def FASTQ_dump_sequences(self):
+		"""
+		Download all FASTQ_files in appropriate directories for downstream analysis
+		"""
+
+		fq_dump_cmnd = "python2 %s/utils/fastqDump_G418.py --rootDir %s --threadNumb %s" % (
+			self.rootDir, self.rootDir, self.threadNumb)
+		subprocess.Popen(fq_dump_cmnd, shell=True).wait()
+
 
 	def merge_allAG_experiment(self):
 		"""
@@ -273,11 +282,25 @@ class RibosomeProfiling_workflow(object):
 			self.rootDir, self.rootDir, self.libSetFile, self.threadNumb)
 		subprocess.Popen(raw_countTables_cmnd, shell=True).wait()
 
+	def RP_avgene_cdsNorm_start(self):
+
+		avgene_cmnd = "python2 %s/riboseq/riboseq_avggene_cdsNorm_start.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+			self.rootDir, self.rootDir, self.libSetFile, self.threadNumb)
+		subprocess.Popen(avgene_cmnd, shell=True).wait()
+
 	def RP_avgene_cdsNorm_stop(self):
 
 		avgene_cmnd = "python2 %s/riboseq/riboseq_avggene_cdsNorm_stop.py --rootDir %s --libSetFile %s --threadNumb %s" % (
 			self.rootDir, self.rootDir, self.libSetFile, self.threadNumb)
 		subprocess.Popen(avgene_cmnd, shell=True).wait()
+
+	def RP_codon_occ(self):
+
+		gtfInFilePrefix = "gencodeV30_protCode_TermStopCodon_validUTRs" 
+
+		codon_occ_cmnd = "python2 %s/riboseq/riboseq_codon_occ_workflow.py --gtfInFilePrefix %s --rootDir %s --libSetFile %s --threadNumb %s" % (
+			self.rootDir, gtfInFilePrefix, self.rootDir, self.libSetFile, self.threadNumb)
+		subprocess.Popen(codon_occ_cmnd, shell=True).wait()
 
 	def densebuild_allTr(self):
 
@@ -347,9 +370,22 @@ class plot_figures(object):
 			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)
 		subprocess.Popen(fig_cmnd_S1, shell=True).wait()
 
-		fig_cmnd_S2 = "python2 %s/figures/figscripts/plot_figure2S2.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+		fig_cmnd_S2A = "python2 %s/figures/figscripts/plot_figure2S2A.py --rootDir %s --libSetFile %s --threadNumb %s" % (
 			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)
-		subprocess.Popen(fig_cmnd_S2, shell=True).wait()
+		subprocess.Popen(fig_cmnd_S2A, shell=True).wait()
+
+		fig_cmnd_S2C = "python2 %s/figures/figscripts/plot_figure2S2C.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)
+		subprocess.Popen(fig_cmnd_S2C, shell=True).wait()
+
+		fig_cmnd_S3A = "python2 %s/figures/figscripts/plot_figure2S3A.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+			rootDir, rootDir, self.libSet_RP_allAGmerge, threadNumb)
+		subprocess.Popen(fig_cmnd_S3A, shell=True).wait()
+
+		fig_cmnd_S3B = "python2 %s/figures/figscripts/plot_figure2S3B.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)
+		subprocess.Popen(fig_cmnd_S3B, shell=True).wait()
+
 
 	def plot_figure_3(self):
 
@@ -376,6 +412,10 @@ class plot_figures(object):
 		fig_cmnd_S1B = "python2 %s/figures/figscripts/plot_figure3S1B.py --rootDir %s --libSetFile %s --threadNumb %s" % (
 			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)
 		subprocess.Popen(fig_cmnd_S1B, shell=True).wait()
+
+		fig_cmnd_S1C = "python2 %s/figures/figscripts/plot_figure3S1C.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)
+		subprocess.Popen(fig_cmnd_S1C, shell=True).wait()
 
 		fig_cmnd_S2 = "python2 %s/figures/figscripts/plot_figure3S2.py --rootDir %s --libSetFile %s --threadNumb %s" % (
 			rootDir, rootDir, self.libSet_RP_allG418, threadNumb)
@@ -513,6 +553,7 @@ def main():
 
 	### 2) Process Raw Data
 	rawData = RawData(rootDir, threadNumb)
+	rawData.FASTQ_dump_sequences()
 	rawData.merge_allAG_experiment()
 
 	### 3) Run Ribosome Profiling analysis pipeline
@@ -522,6 +563,7 @@ def main():
 	RP.RPexp()
 	RP.RP_raw_countTables()
 	RP.RP_avgene_cdsNorm_stop()
+	RP.RP_codon_occ()
 	RP.densebuild_allTr()
 
 	RP2 = RibosomeProfiling_workflow(rootDir, threadNumb, 
@@ -529,6 +571,7 @@ def main():
 		libSetFileAllTr="riboseq_libsettings_allAGmerge_allTr")
 	RP2.RPexp()
 	RP2.RP_raw_countTables()
+	RP2.RP_avgene_cdsNorm_start()
 	RP2.RP_avgene_cdsNorm_stop()
 
 	### 4) Run RNAseq analysis pipeline

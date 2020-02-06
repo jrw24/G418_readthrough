@@ -250,7 +250,7 @@ def build_stopseq_RRTS_kpLogo(dfinput, samp):
 	outdf.to_csv("%s/%s_%supTO%sdown_kpLogoTest_stopCollapse.txt" % (sampledir, samp, upstreamNts, downstreamNts), sep='\t', header=False, index=False)
 
 	startPosit = upstreamNts+1
-	kpLogCmnd = "/home/jamie/tools/kpLogo/kpLogo-1.1/bin/kpLogo %s/%s_%supTO%sdown_kpLogoTest_stopCollapse.txt -k 1 -startPos %s -o %s/%s_%supTO%sdown_kpLogo -weighted -gapped -pc 0.05" % (
+	kpLogCmnd = "kpLogo %s/%s_%supTO%sdown_kpLogoTest_stopCollapse.txt -k 1 -startPos %s -o %s/%s_%supTO%sdown_kpLogo -weighted -gapped -pc 0.05" % (
 		sampledir, samp, upstreamNts, downstreamNts, startPosit, sampledir, samp, upstreamNts, downstreamNts)
 
 

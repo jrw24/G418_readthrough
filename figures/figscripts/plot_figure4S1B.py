@@ -114,7 +114,7 @@ def plot_RRTS_boxplot_4nt(dflist, namelist):
 	ax = sns.boxplot(x=dfp['stop4nt'],  y=dfp['RRTS'], 
 	                 orient = 'v', fliersize = 0, order=scl, notch=True, width=0.8)
 
-	ax.set_ylim((0,1.4))
+	ax.set_ylim((0,0.4))
 	plt.savefig(figout, format='pdf', bbox_inches="tight")
 
 def main():
